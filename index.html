@@ -22,6 +22,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { overflow-x: hidden; }
         body {
             background-color: var(--bg);
             min-height: 100vh;
@@ -548,13 +549,48 @@
             .footer-logo-text { font-size: 10vw; }
         }
 
-        /* ---------- Light responsive guard ---------- */
+        /* ---------- Mobile: fixed single-screen -> clean vertical scroll stack ---------- */
         @media (max-width: 720px) {
-            .hero-title { font-size: 2.1rem; }
-            .footer-top, .footer-bottom { flex-direction: column; gap: 0.9rem; align-items: center; text-align: center; }
+            body { overflow-y: auto; overflow-x: hidden; cursor: auto; }
+
+            /* Hero fills the first screen, content vertically centered */
+            .hero-content {
+                min-height: 100dvh;
+                justify-content: center;
+                padding: 13vh 20px 7vh;
+            }
+            .availability { margin-bottom: 1.4rem; }
+            .hero-title { font-size: clamp(2rem, 9vw, 2.9rem); margin-bottom: 1.1rem; }
+            .hero-tagline { display: block; font-size: 1rem; margin-bottom: 1.8rem; max-width: 36ch; }
+            .hero-actions { flex-direction: column; width: 100%; gap: 0.8rem; }
+            .btn { width: 100%; justify-content: center; font-size: 1rem; padding: 1.05rem 1.5rem; }
+
+            /* Footer flows in the document instead of being pinned to mid-screen */
+            .footer-container {
+                position: static;
+                transform: none;
+                top: auto; left: auto; right: auto;
+                width: auto;
+                margin: 0 16px 1.5rem;
+                backdrop-filter: none;            /* avoid blur repaint while scrolling */
+                -webkit-backdrop-filter: none;
+            }
+            .footer-inner { padding: 1.6rem 1.4rem; background: rgba(10, 8, 26, 0.6); }
+            .footer-top, .footer-bottom { flex-direction: column; gap: 1rem; align-items: center; text-align: center; }
             .footer-socials, .footer-links, .footer-copyright { justify-content: center; text-align: center; flex: none; }
-            .footer-logo-text { font-size: 17vw; }
-            body { cursor: auto; }
+            .footer-links { flex-wrap: wrap; gap: 1rem 1.6rem; }
+            .footer-link { font-size: 1rem; }
+            .footer-copyright { font-size: 0.95rem; }
+
+            /* Giant wordmark flows at the bottom and fits the viewport width */
+            .footer-logo-wrap {
+                position: static;
+                transform: none;
+                margin: 0.5rem 0 0;
+                padding: 0 12px calc(env(safe-area-inset-bottom, 0px) + 22px);
+            }
+            .footer-logo-text { font-size: 14vw; }
+
             .glass-cursor-card, .cursor-ring-outline { display: none; }
         }
     </style>
