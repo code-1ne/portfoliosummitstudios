@@ -39,16 +39,16 @@
             overflow: hidden;
             background: var(--bg);
         }
+        /* radial-gradient orbs instead of blur() filters — far cheaper for the GPU */
         .blob {
             position: absolute;
             border-radius: 50%;
-            filter: blur(90px);
             opacity: 0.55;
             will-change: transform;
         }
-        .blob.b1 { width: 58vw; height: 58vw; background: #7c3aed; top: -16vw; left: -12vw; animation: drift1 26s var(--ease) infinite; }
-        .blob.b2 { width: 52vw; height: 52vw; background: #06b6d4; bottom: -20vw; right: -8vw; animation: drift2 30s var(--ease) infinite; }
-        .blob.b3 { width: 42vw; height: 42vw; background: #ec4899; top: 28vh; left: 38vw; opacity: 0.45; animation: drift3 34s var(--ease) infinite; }
+        .blob.b1 { width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(124,58,237,0.85) 0%, rgba(124,58,237,0) 68%); top: -22vw; left: -16vw; animation: drift1 26s var(--ease) infinite; }
+        .blob.b2 { width: 64vw; height: 64vw; background: radial-gradient(circle, rgba(6,182,212,0.80) 0%, rgba(6,182,212,0) 68%); bottom: -26vw; right: -12vw; animation: drift2 30s var(--ease) infinite; }
+        .blob.b3 { width: 52vw; height: 52vw; background: radial-gradient(circle, rgba(236,72,153,0.70) 0%, rgba(236,72,153,0) 68%); top: 24vh; left: 34vw; opacity: 0.5; animation: drift3 34s var(--ease) infinite; }
 
         @keyframes drift1 {
             0%, 100% { transform: translate(0, 0) scale(1); }
@@ -131,8 +131,8 @@
             border-radius: 9999px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             margin-bottom: 1.2rem;
         }
         .availability .dot {
@@ -241,8 +241,8 @@
             color: var(--text);
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
         .btn-ghost .btn-icon { background: rgba(255, 255, 255, 0.10); color: var(--text); }
         .btn-ghost:hover {
@@ -264,8 +264,8 @@
             border-radius: 30px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             box-shadow: 0 40px 120px -24px rgba(0, 0, 0, 0.65);
         }
         /* Double-Bezel: inner core (the glass plate) */
@@ -395,8 +395,8 @@
             pointer-events: none;
             padding: 0.7rem 1.4rem;
             background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: 9999px;
             box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
@@ -791,10 +791,10 @@
                 const ctx = canvas.getContext('2d');
                 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
                 const COLORS = ['#a78bfa', '#22d3ee', '#f472b6'];
-                let W, H, DPR, cx, horizonY, stars = [], nodes = [], streaks = [];
+                let W, H, DPR, cx, horizonY, horizonGrad, stars = [], nodes = [], streaks = [], rafId = 0, last = 0;
 
                 function build() {
-                    const sc = Math.round(Math.min(W, 1700) / 7); // density scales with width
+                    const sc = Math.round(Math.min(W, 1600) / 10); // density scales with width
                     stars = Array.from({ length: sc }, () => ({
                         x: Math.random() * W, y: Math.random() * H,
                         z: Math.random() * 0.8 + 0.2,
@@ -803,7 +803,7 @@
                         ts: Math.random() * 0.05 + 0.01,
                         c: Math.random() < 0.25 ? COLORS[(Math.random() * 3) | 0] : '#ffffff'
                     }));
-                    const nc = W < 720 ? 26 : 52;
+                    const nc = W < 720 ? 22 : 40;
                     nodes = Array.from({ length: nc }, () => ({
                         x: Math.random() * W, y: Math.random() * H * 0.72,
                         vx: (Math.random() - 0.5) * 0.22, vy: (Math.random() - 0.5) * 0.22,
@@ -811,12 +811,15 @@
                     }));
                 }
                 function resize() {
-                    DPR = Math.min(window.devicePixelRatio || 1, 2);
+                    DPR = Math.min(window.devicePixelRatio || 1, 1.5);
                     W = window.innerWidth; H = window.innerHeight;
                     canvas.width = W * DPR; canvas.height = H * DPR;
                     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
                     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
                     cx = W / 2; horizonY = H * 0.58;
+                    horizonGrad = ctx.createLinearGradient(0, horizonY - 60, 0, horizonY + 6);
+                    horizonGrad.addColorStop(0, 'rgba(244,114,182,0)');
+                    horizonGrad.addColorStop(1, 'rgba(244,114,182,0.22)');
                     build();
                 }
                 window.addEventListener('resize', resize);
@@ -848,10 +851,7 @@
                         ctx.strokeStyle = 'rgba(167,139,250,0.12)';
                         ctx.beginPath(); ctx.moveTo(cx, horizonY); ctx.lineTo(cx + fx * W * 2, H); ctx.stroke();
                     }
-                    const g = ctx.createLinearGradient(0, horizonY - 60, 0, horizonY + 6);
-                    g.addColorStop(0, 'rgba(244,114,182,0)');
-                    g.addColorStop(1, 'rgba(244,114,182,0.22)');
-                    ctx.fillStyle = g; ctx.fillRect(0, horizonY - 60, W, 66);
+                    ctx.fillStyle = horizonGrad; ctx.fillRect(0, horizonY - 60, W, 66);
                 }
                 function drawNetwork() {
                     const D = 130;
@@ -896,15 +896,24 @@
                     }
                 }
                 function frame(t) {
+                    rafId = requestAnimationFrame(frame);
+                    if (t - last < 32) return;   // cap to ~30fps — halves backdrop-blur recompute cost
+                    last = t;
                     ctx.clearRect(0, 0, W, H);
                     drawGrid(t);
                     drawStars();
                     drawNetwork();
                     drawStreaks();
-                    requestAnimationFrame(frame);
                 }
-                if (reduce) { ctx.clearRect(0, 0, W, H); drawGrid(0); drawStars(); drawNetwork(); }
-                else { requestAnimationFrame(frame); }
+                if (reduce) {
+                    ctx.clearRect(0, 0, W, H); drawGrid(0); drawStars(); drawNetwork();
+                } else {
+                    rafId = requestAnimationFrame(frame);
+                    document.addEventListener('visibilitychange', () => {
+                        if (document.hidden) { cancelAnimationFrame(rafId); }
+                        else { last = 0; rafId = requestAnimationFrame(frame); }
+                    });
+                }
             })();
         });
     </script>
