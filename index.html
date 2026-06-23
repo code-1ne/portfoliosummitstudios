@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SummitStudios — Creative Developer</title>
+    <meta name="description" content="SummitStudios is a creative development studio crafting immersive, motion-driven web experiences — design-driven engineering for interfaces that feel alive.">
+    <meta name="theme-color" content="#060418">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="SummitStudios — Creative Developer">
+    <meta property="og:description" content="Design-driven engineering: interfaces, motion, and the web that feels alive.">
+    <meta property="og:image" content="https://picsum.photos/seed/summitstudios/1200/630">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23a78bfa'/%3E%3Cstop offset='0.5' stop-color='%2322d3ee'/%3E%3Cstop offset='1' stop-color='%23f472b6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%23060418'/%3E%3Ctext x='32' y='46' font-family='Arial,sans-serif' font-size='42' font-weight='700' fill='url(%23g)' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap');
 
@@ -22,7 +30,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { overflow-x: hidden; }
+        html { overflow-x: hidden; scroll-behavior: smooth; }
         body {
             background-color: var(--bg);
             min-height: 100vh;
@@ -133,6 +141,7 @@
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
             margin-bottom: 1.2rem;
         }
         .availability .dot {
@@ -168,6 +177,7 @@
             line-height: 1.08;
             letter-spacing: -0.025em;
             margin-bottom: 0.9rem;
+            text-wrap: balance;
         }
         .hero-title .accent {
             font-family: 'Instrument Serif', Georgia, serif;
@@ -188,6 +198,7 @@
             max-width: 500px;
             line-height: 1.5;
             margin-bottom: 1.3rem;
+            text-wrap: pretty;
         }
 
         .hero-actions {
@@ -243,6 +254,7 @@
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
         }
         .btn-ghost .btn-icon { background: rgba(255, 255, 255, 0.10); color: var(--text); }
         .btn-ghost:hover {
@@ -266,10 +278,26 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
-            box-shadow: 0 40px 120px -24px rgba(0, 0, 0, 0.65);
+            overflow: hidden;
+            box-shadow: 0 40px 120px -24px rgba(20, 6, 40, 0.72);   /* tinted, not pure black */
         }
+        /* Spotlight border: the bezel illuminates under the cursor */
+        .footer-container::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgba(167, 139, 250, 0.22), transparent 55%);
+            opacity: 0;
+            transition: opacity 0.5s var(--ease);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .footer-container:hover::after { opacity: 1; }
         /* Double-Bezel: inner core (the glass plate) */
         .footer-inner {
+            position: relative;
+            z-index: 1;
             display: flex;
             flex-direction: column;
             padding: 1.5rem 2.2rem;
@@ -291,6 +319,7 @@
             color: var(--text);
             letter-spacing: -0.02em;
             margin: 0;
+            text-wrap: balance;
         }
         .footer-title.quote {
             font-family: 'Instrument Serif', Georgia, serif;
@@ -550,7 +579,7 @@
         }
 
         /* ---------- Mobile: fixed single-screen -> clean vertical scroll stack ---------- */
-        @media (max-width: 720px) {
+        @media (max-width: 720px), (max-height: 560px) {
             body { overflow-y: auto; overflow-x: hidden; cursor: auto; }
 
             /* Hero fills the first screen, content vertically centered */
@@ -563,7 +592,7 @@
             .hero-title { font-size: clamp(2rem, 9vw, 2.9rem); margin-bottom: 1.1rem; }
             .hero-tagline { display: block; font-size: 1rem; margin-bottom: 1.8rem; max-width: 36ch; }
             .hero-actions { flex-direction: column; width: 100%; gap: 0.8rem; }
-            .btn { width: 100%; justify-content: center; font-size: 1rem; padding: 1.05rem 1.5rem; }
+            .btn { width: 100%; max-width: 420px; justify-content: center; font-size: 1rem; padding: 1.05rem 1.5rem; }
 
             /* Footer flows in the document instead of being pinned to mid-screen */
             .footer-container {
@@ -589,7 +618,7 @@
                 margin: 0.5rem 0 0;
                 padding: 0 12px calc(env(safe-area-inset-bottom, 0px) + 22px);
             }
-            .footer-logo-text { font-size: 14vw; }
+            .footer-logo-text { font-size: min(14vw, 90px); }
 
             .glass-cursor-card, .cursor-ring-outline { display: none; }
         }
@@ -782,6 +811,16 @@
                     requestAnimationFrame(updatePhysics);
                 };
                 updatePhysics();
+            }
+
+            // --- Spotlight border: illuminate the footer bezel under the cursor ---
+            const footerEl = document.querySelector('.footer-container');
+            if (footerEl) {
+                footerEl.addEventListener('mousemove', (e) => {
+                    const r = footerEl.getBoundingClientRect();
+                    footerEl.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+                    footerEl.style.setProperty('--my', (e.clientY - r.top) + 'px');
+                });
             }
 
             // --- Cyberpunk astral background: starfield + neon grid + constellation + streaks ---
